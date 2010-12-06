@@ -149,12 +149,24 @@ found in rocket_twilio, we translate this to 'SMSMessages' and
 'SMSMessages' which are then used for twilio.SMSMessages.post(...)
 and 'SMSMessagesProxy', as attached to the Rocket.
 
+We make use of this function by passing it in as part of Rocket's
+__init__().
+
+::
+
+    class Twilio(rocket.Rocket):
+        """..."""
+        def __init__(self, *args, **kwargs):
+            super(Twilio, self).__init__(FUNCTIONS,
+                                         gen_namespace_pair=gen_namespace_pair,
+                                         ...)
+    
 Often enough, you won't need these overrides, but you'll be happy 
 rocket handles a few of them easily when they come up.
 
 
 URL's with Variables
-=========
+====================
 
 Variables sometimes turn up in the way URL's are constructed. Like perhaps a
 feed system with api.songkick.com/api/3.0/artists/<artist_id>/calendar.json.
