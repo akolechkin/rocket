@@ -52,14 +52,15 @@ by default. Each module has a setup.py for installing but Rocket doesn't install
 by default.
 
 Currently packaged:
-`Sailthru <https://github.com/ExtensionFM/rocket/tree/master/modules/rocket_sailthru/>`_,
-`Echonest <https://github.com/ExtensionFM/rocket/tree/master/modules/rocket_echonest/>`_,
-`Twilio <https://github.com/ExtensionFM/rocket/tree/master/modules/rocket_twilio/>`_, 
-`Twitter <https://github.com/ExtensionFM/rocket/tree/master/modules/rocket_twitter/>`_, 
-`Exfm <https://github.com/ExtensionFM/rocket/tree/master/modules/rocket_exfm/>`_.
+`Sailthru <https://github.com/ExtensionFM/rocket/tree/master/modules/r_sailthru/>`_,
+`Songkick <https://github.com/ExtensionFM/rocket/tree/master/modules/r_songkick/>`_,
+`Echonest <https://github.com/ExtensionFM/rocket/tree/master/modules/r_echonest/>`_,
+`Twilio <https://github.com/ExtensionFM/rocket/tree/master/modules/r_twilio/>`_, 
+`Twitter <https://github.com/ExtensionFM/rocket/tree/master/modules/r_twitter/>`_, 
+`Exfm <https://github.com/ExtensionFM/rocket/tree/master/modules/r_exfm/>`_.
 
 People looking to learn how Rocket works should checkout `rocket_simple
-<https://github.com/ExtensionFM/rocket/tree/master/modules/rocket_simple/>`_ 
+<https://github.com/ExtensionFM/rocket/tree/master/modules/r_simple/>`_ 
 in the modules directory.
 
 
@@ -147,6 +148,39 @@ and 'SMSMessagesProxy', as attached to the Rocket.
 
 Often enough, you won't need these overrides, but you'll be happy 
 rocket handles a few of them easily when they come up.
+
+
+URL's with Variables
+=========
+
+Variables sometimes turn up in the way URL's are constructed. Like perhaps a
+feed system with api.songkick.com/api/3.0/artists/<artist_id>/calendar.json.
+Rocket handles url's with variables with two helper functions.
+
+Image we have this FUNCTIONS list.
+
+::
+
+    FUNCTIONS = {
+        'artists/{artist_id}/calendar': {
+            'get': [
+                ('artist_id', str, []),
+            ],
+        }
+
+Rocket generates access to this namespace by replacing the {variable} with 
+an underscore. We see this as Artists_CalendarProxy and artists_calendar.get().
+
+Rocket then implements gen_query_url to fill in the variable's values with
+values from the caller. This means {artist_id} gets replaced with the artist's
+id.
+
+::
+
+    songkick.artists_calendar.get('258948')
+
+This gets translated to a URL like: 
+api.songkick.com/api/3.0/artists/258948/calendar.json.
 
 
 Code generation using proxies
