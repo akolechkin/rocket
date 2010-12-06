@@ -27,6 +27,6 @@ Install
 Don't install this. It's meant for educational purposes only.
 
 r_simple depends on Rocket being installed.
-http://github.com/ExtensionFM/rocket
+http://github.com/exfm/rocket
 
 James Dennis <james@extension.fm>

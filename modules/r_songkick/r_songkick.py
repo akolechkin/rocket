@@ -4,7 +4,7 @@
 
 
 __doc__ = """Python bindings for the Songkick API
-(r_songkick - courtesy of ExtensionFM)
+(r_songkick - courtesy of exfm)
 
 For more information, see
 

@@ -7,5 +7,5 @@ setup(name='r_echonest',
       description='Python Client Library for the EchoNest API',
       author='James Dennis',
       author_email='james@extension.fm',
-      url='http://github.com/ExtensionFM/rocket/modules/r_echonest',
+      url='https://github.com/exfm/rocket/tree/master/modules/r_echonest',
       py_modules=['r_echonest'])

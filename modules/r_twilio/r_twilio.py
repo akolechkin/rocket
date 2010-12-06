@@ -4,11 +4,11 @@
 
 
 __doc__ = """Python bindings for the Twilio API
-(pytwilio - courtesy of ExtensionFM)
+(r_twilio - courtesy of exfm)
 
 For more information, see
 
-Home Page: http://github.com/extensionfm/pytwilio
+Home Page: http://github.com/exfm/rocket/tree/master/modules/r_twilio
 Developer: http://docs.twilio.com/api
 """
 

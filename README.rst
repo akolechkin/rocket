@@ -52,15 +52,15 @@ by default. Each module has a setup.py for installing but Rocket doesn't install
 by default.
 
 Currently packaged:
-`Sailthru <https://github.com/ExtensionFM/rocket/tree/master/modules/r_sailthru/>`_,
-`Songkick <https://github.com/ExtensionFM/rocket/tree/master/modules/r_songkick/>`_,
-`Echonest <https://github.com/ExtensionFM/rocket/tree/master/modules/r_echonest/>`_,
-`Twilio <https://github.com/ExtensionFM/rocket/tree/master/modules/r_twilio/>`_, 
-`Twitter <https://github.com/ExtensionFM/rocket/tree/master/modules/r_twitter/>`_, 
-`Exfm <https://github.com/ExtensionFM/rocket/tree/master/modules/r_exfm/>`_.
+`Sailthru <https://github.com/exfm/rocket/tree/master/modules/r_sailthru/>`_,
+`Songkick <https://github.com/exfm/rocket/tree/master/modules/r_songkick/>`_,
+`Echonest <https://github.com/exfm/rocket/tree/master/modules/r_echonest/>`_,
+`Twilio <https://github.com/exfm/rocket/tree/master/modules/r_twilio/>`_, 
+`Twitter <https://github.com/exfm/rocket/tree/master/modules/r_twitter/>`_, 
+`Exfm <https://github.com/exfm/rocket/tree/master/modules/r_exfm/>`_.
 
 People looking to learn how Rocket works should checkout `rocket_simple
-<https://github.com/ExtensionFM/rocket/tree/master/modules/r_simple/>`_ 
+<https://github.com/exfm/rocket/tree/master/modules/r_simple/>`_ 
 in the modules directory.
 
 

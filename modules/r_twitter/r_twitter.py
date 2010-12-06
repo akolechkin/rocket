@@ -3,11 +3,11 @@
 # r_twitter
 
 __doc__ = """Python bindings for the Twitter API
-(r_twitter - courtesy of ExtensionFM)
+(r_twitter - courtesy of exfm)
 
 For more information, see
 
-Home Page: nuttin yet.
+Home Page: https://github.com/exfm/rocket/tree/master/modules/r_twitter
 Developer: http://twitterapi.pbworks.com/
 """
 

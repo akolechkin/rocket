@@ -7,5 +7,5 @@ setup(name='r_songkick',
       description='Python Client Library for the Songkick API',
       author='James Dennis',
       author_email='james@extension.fm',
-      url='http://github.com/ExtensionFM/rocket/modules/r_songkick',
+      url='https://github.com/exfm/rocket/tree/master/modules/r_songkick',
       py_modules=['r_songkick'])

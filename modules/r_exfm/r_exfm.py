@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-__doc__ = """Python bindings for the ExtensionFM public API"""
+__doc__ = """Python bindings for the exfm public API"""
 
 import rocket
 from rocket.proxies import gen_ns_pair_multi_delim

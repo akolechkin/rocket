@@ -4,11 +4,11 @@
 
 
 __doc__ = """Python bindings for the Sailthru API
-(rocket_sailthru - courtesy of ExtensionFM)
+(rocket_sailthru - courtesy of exfm)
 
 For more information, see
 
-Home Page: http://github.com/extensionfm/rocket_sailthru
+Home Page: http://github.com/exfm/rocket_sailthru
 Developer: http://docs.sailthru.com/api
 """
 

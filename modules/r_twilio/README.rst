@@ -47,7 +47,7 @@ Install
     python ./setup.py install
 
 r_twilio depends on Rocket being installed.
-http://github.com/ExtensionFM/rocket
+http://github.com/exfm/rocket
 
 pip / easy_install support on the way
 
