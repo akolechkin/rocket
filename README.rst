@@ -120,8 +120,11 @@ and generating what you think it is.
 
 Sometimes namespaces are complicated and instead of being simple like
 'email' they have some complexity like 'group/subgroup.method'. Rocket
-handles this by offering additional functions to handle how that string
-is translated into dynamics objects.
+handles this by offering several functions to handle how that string
+is translated into dynamics objects. 
+
+It's easy enough to think of this functions as a _namespace pair
+generator_. We'll see this again in the next section.
 
 Let's look at one: rocket.proxies import gen_ns_pair_multi_delim.
 
@@ -170,6 +173,8 @@ Imagine we have this FUNCTIONS list.
 
 Rocket generates access to this namespace by replacing the {variable} with 
 an underscore. We see this as Artists_CalendarProxy and artists_calendar.get().
+This is done by using proxies.gen_ns_pair_multi_vars as the namespace pair
+generating function described in the previous section.
 
 Rocket then implements gen_query_url to fill in the variable's values with
 values from the caller. This means {artist_id} gets replaced with the artist's
