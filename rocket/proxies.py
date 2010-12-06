@@ -21,7 +21,6 @@ def gen_ns_pair_default(ns):
     """
     return (ns.lower(), ns.title())
 
-
 def gen_ns_pair_multi_delim(ns, delims=['\/', '\.']):
     """Similar to gen_ns_pair_default but allows a '/' or '.' in the
     namespace field. If any of the split segments consist entirely of
@@ -44,6 +43,23 @@ def gen_ns_pair_multi_delim(ns, delims=['\/', '\.']):
     groups = re.split('|'.join(delims), ns)
     ns_fun = ''.join(groups)
     ns_title = ''.join([title_if_lower(g) for g in groups])
+    return (ns_fun, ns_title)
+
+def gen_ns_pair_multi_vars(ns, delims=['\/', '\.'], var_pattern='{\w+}'):
+    """Similar to gen_ns_multi_delim but allows the use of variables
+    in namespaces for use in URL generation. The generated names replace
+    the variable with an underscore '_'.
+
+    artists/{artist_id}/calendar => ('artists_calendar', 'Artists_Calendar')
+
+    It will handle multiple variables fine too.
+
+    a/{b}/c/{d}/e/{f}/g => a_c_e_g
+    """
+    (ns_fun, ns_title) = gen_ns_pair_multi_delim(ns, delims=delims)
+    p = re.compile(var_pattern)
+    ns_fun = p.sub('_', ns_fun)
+    ns_title = p.sub('_', ns_title)
     return (ns_fun, ns_title)
 
 
