@@ -21,7 +21,8 @@ def gen_ns_pair_default(ns):
     """
     return (ns.lower(), ns.title())
 
-def gen_ns_pair_multi_delim(ns, delims=['\/', '\.']):
+default_multi_delims=['\/', '\.', ':']
+def gen_ns_pair_multi_delim(ns, delims=default_multi_delims):
     """Similar to gen_ns_pair_default but allows a '/' or '.' in the
     namespace field. If any of the split segments consist entirely of
     upper case letters, they stay upper case. They are title()'d otherwise
@@ -45,7 +46,9 @@ def gen_ns_pair_multi_delim(ns, delims=['\/', '\.']):
     ns_title = ''.join([title_if_lower(g) for g in groups])
     return (ns_fun, ns_title)
 
-def gen_ns_pair_multi_vars(ns, delims=['\/', '\.'], var_pattern='{\w+}'):
+default_ns_var_pattern = '{(\w+)}'
+def gen_ns_pair_multi_vars(ns, delims=default_multi_delims,
+                           var_pattern=default_ns_var_pattern):
     """Similar to gen_ns_multi_delim but allows the use of variables
     in namespaces for use in URL generation. The generated names replace
     the variable with an underscore '_'.
@@ -61,6 +64,22 @@ def gen_ns_pair_multi_vars(ns, delims=['\/', '\.'], var_pattern='{\w+}'):
     ns_fun = p.sub('_', ns_fun)
     ns_title = p.sub('_', ns_title)
     return (ns_fun, ns_title)
+
+def fill_ns_multi_vars(rocket, ns, args, ns_var_pattern=default_ns_var_pattern):
+    """Helper function for filling in the variables in the namespace
+    as found by gen_ns_pair_multi_vars.
+
+    Removes the arguments matched in ns from args.
+    """
+    ns = rocket.namespace_map[ns]
+    var_matches = re.findall(ns_var_pattern, ns)
+        
+    for m in var_matches:
+        var_value = args[m]
+        del args[m]
+        ns = re.sub(ns_var_pattern, var_value, ns, 1)
+
+    return ns
 
 
 ########################################
