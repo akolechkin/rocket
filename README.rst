@@ -157,7 +157,7 @@ Variables sometimes turn up in the way URL's are constructed. Like perhaps a
 feed system with api.songkick.com/api/3.0/artists/<artist_id>/calendar.json.
 Rocket handles url's with variables with two helper functions.
 
-Image we have this FUNCTIONS list.
+Imagine we have this FUNCTIONS list.
 
 ::
 
@@ -177,7 +177,8 @@ id.
 
 ::
 
-    songkick.artists_calendar.get('258948')
+    artist_id = '258948'
+    songkick.artists_calendar.get(artist_id)
 
 This gets translated to a URL like: 
 api.songkick.com/api/3.0/artists/258948/calendar.json.
