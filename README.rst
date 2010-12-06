@@ -123,8 +123,8 @@ Sometimes namespaces are complicated and instead of being simple like
 handles this by offering several functions to handle how that string
 is translated into dynamics objects. 
 
-It's easy enough to think of this functions as a _namespace pair
-generator_. We'll see this again in the next section.
+It's easy enough to think of this functions as a *namespace pair
+generator*. We'll see this again in the next section.
 
 Let's look at one: rocket.proxies import gen_ns_pair_multi_delim.
 
