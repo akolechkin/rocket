@@ -8,7 +8,7 @@ Rocket is licensed under the `Apache Licence, Version 2.0
 <http://www.apache.org/licenses/LICENSE-2.0.html>`_
 
 
-In Short, Rocket is...
+In short, Rocket is...
 ======================
 
 Rocket is a collection of modules that make interacting with remote API's easy.
