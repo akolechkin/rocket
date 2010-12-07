@@ -41,6 +41,10 @@ This is what using the the Awesome API rocket would look like:
 
     response = awesome_api.get_awesome_list.get('cool stuff', page=1, size=1)
 
+I have been able to implement entire API's with multiple namespaces in an afternoon
+using this method and found the total lines of codes to often be below half of the
+other implementation offerings.
+
 
 Modules
 =======
