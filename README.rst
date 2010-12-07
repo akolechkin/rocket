@@ -13,11 +13,13 @@ In short, Rocket is...
 
 Rocket is a collection of modules that make interacting with remote API's easy.
 Rocket comes with a code generation system for using an IDL to describe the
-remote source's API. The complexity of implementing the API is largely taken
-care of by Rocket. 
+remote source's API. 
 
-Let's say we want to connect wo the Awesome API to fetch the top item off the
-'cool stuff' list. The IDL for this API might look like below:
+There is complexity in implementing a remote API so Rocket tries to handle all
+of that for you and let you focus on what's unique about this particular API.
+
+Let's say we want to connect to the Awesome API and fetch the top item off the
+'cool stuff' list with HTTP GET. The IDL for this API might look like below:
 
 ::
 
@@ -30,7 +32,7 @@ Let's say we want to connect wo the Awesome API to fetch the top item off the
             ],
         }
 
-To generate code that you interact with that looks like this:
+This is what using the the Awesome API rocket would look like:
 
 ::
 
@@ -38,8 +40,6 @@ To generate code that you interact with that looks like this:
     awesome_api = AwesomeAPI(api_key='some key', api_secret_key='SHHHHH')
 
     response = awesome_api.get_awesome_list.get('cool stuff', page=1, size=1)
-
-This method has helped me save time many times now.
 
 
 Modules
