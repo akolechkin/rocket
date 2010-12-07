@@ -8,41 +8,39 @@ Rocket is licensed under the `Apache Licence, Version 2.0
 <http://www.apache.org/licenses/LICENSE-2.0.html>`_
 
 
-Features
-========
+In Short, Rocket is...
+======================
 
-Rocket uses an interface description language, specified by Rocket implementors,
-to generate Python code that implements each API call. 
+Rocket is a collection of modules that make interacting with remote API's easy.
+Rocket comes with a code generation system for using an IDL to describe the
+remote source's API. The complexity of implementing the API is largely taken
+care of by Rocket. 
 
-Rocket is designed to help programmers focus on the details of an API
-implementation, rather than the details of implementing an API.
-
-If a remote API consists of only one namespace, called ``email``, which goes over
-HTTP POST and takes two arguments email and vars, with vars being optional,
-your API implementation will look close to this.
+Let's say we want to connect wo the Awesome API to fetch the top item off the
+'cool stuff' list. The IDL for this API might look like below:
 
 ::
 
     FUNCTIONS = {
-        'email': {
-            'post': [
-                ('email', str, []),
-                ('vars', rocket.json, ['optional']),
+        'get_awesome_list': {
+            'get': [
+                ('list_name', str, []),
+                ('page', int, ['optional']),
+                ('size', str, ['optional']),
             ],
         }
 
-That's as minimal as I've been able to get for describing an API. Perhaps
-a different structure could be used, but the idea remains the same. To
-describe the API in a language agnostic way and generate code that implements
-it.
+To generate code that you interact with that looks like this:
 
-An API implementer would then subclass Rocket, like ``class Sailthru(Rocket)``
-and then override ``__init__()`` to pass that ``FUNCTIONS`` list to rocket for
-code generation.
+::
 
-An API user would not have to worry about this stuff, as it is behind the
-scenes of the Rocket framework.
-    
+    from r_awesome import AwesomeAPI
+    awesome_api = AwesomeAPI(api_key='some key', api_secret_key='SHHHHH')
+
+    response = awesome_api.get_awesome_list.get('cool stuff', page=1, size=1)
+
+This method has helped me save time many times now.
+
 
 Modules
 =======
@@ -59,10 +57,39 @@ Currently packaged:
 `Twitter <https://github.com/exfm/rocket/tree/master/modules/r_twitter/>`_, 
 `Exfm <https://github.com/exfm/rocket/tree/master/modules/r_exfm/>`_.
 
-People looking to learn how Rocket works should checkout `rocket_simple
-<https://github.com/exfm/rocket/tree/master/modules/r_simple/>`_ 
+If you're only looking to use one of these modules, then you can skip the rest of 
+the documentation.
+
+People looking to learn more about how Rocket works should continue reading and then
+checkout `r_simple <https://github.com/exfm/rocket/tree/master/modules/r_simple/>`_ 
 in the modules directory.
 
+
+Rocket's design
+===============
+
+Rocket uses an interface description language, specified by Rocket implementors,
+to generate Python code that implements each API call. 
+
+Rocket is designed to help programmers focus on the details of an API
+implementation, rather than the details of implementing an API.
+
+If a remote API consists of only one namespace, called ``email``, which goes over
+HTTP POST and takes two arguments email and vars, with vars being optional,
+your API implementation will look close to this.
+
+That's as minimal as I've been able to get for describing an API. Perhaps
+a different structure could be used, but the idea remains the same. To
+describe the API in a language agnostic way and generate code that implements
+it.
+
+An API implementer would then subclass Rocket, like ``class Sailthru(Rocket)``
+and then override ``__init__()`` to pass that ``FUNCTIONS`` list to rocket for
+code generation.
+
+An API user would not have to worry about this stuff, as it is behind the
+scenes of the Rocket framework.
+    
 
 Callbacks
 =========
