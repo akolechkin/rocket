@@ -26,6 +26,7 @@ r_songkick is a complete implementation of songkick's API.
     response = songkick.artistsmbid_calendar.get(artist_name=artist_name,
                                                  per_page=1)
 
+See example.py for more.
 
 Install
 -------
