@@ -23,6 +23,19 @@ class RocketAPIException(Exception):
     def __str__(self):
         return '%s - (code: %s)' % (self.msg, self.code)
 
+class AdvancedRequest(urllib2.Request):
+    """
+    Advanced urllib2 request with custom http method.
+    """
+
+    def __init__(self, url, method, data={}, headers={},
+            origin_req_host=None, unverifiable=False):
+        self._method = method    
+        urllib2.Request.__init__(self, url, data, headers, 
+                origin_req_host, unverifiable)
+    
+    def get_method(self):
+        return self._method or urllib2.Request.get_method(self)
 
 ########################################
 # URL handling #########################
@@ -49,12 +62,12 @@ def urlread(url, data=None, headers={}, method=DEFAULT_REQUEST_METHOD,
 
     # encoded_args = unicode_urlencode(encoded_args)
     
-    if method == 'GET':
+    if method in ('GET', 'DELETE'):
         if data is not None:
             url = '%s?%s' % (url, data)
             logger.debug("Make %s connection to %s" % ( method, data ) )
-        data = None
-
+            data = None
+    
     if basic_auth_pair:
         auth_handler = urllib2.HTTPBasicAuthHandler()
         auth_handler.add_password(realm=basic_auth_realm,
@@ -65,19 +78,21 @@ def urlread(url, data=None, headers={}, method=DEFAULT_REQUEST_METHOD,
         # ...and install it globally so it can be used with urlopen.
         urllib2.install_opener(opener)
 
-    request = urllib2.Request(url, data)
+    request = AdvancedRequest(url, method, data)
+
     try:
         open_req = urllib2.urlopen(request)
         # commenting out the code the commented comment comments on
         #if method == 'POST':
         #    req.add_header('Content-type', "application/x-www-form-urlencoded")
         #    req.add_header('Accept', "text/plain")
-        open_req.http_method = method
+        #open_req.http_method = method
     except urllib2.HTTPError, http_e:
         logger.error("HTTP error: %s" % http_e)
         raise RocketAPIException( http_e.code,  http_e )
     except urllib2.URLError,e:
         logger.warn("Connection error %s" % e)
+        # TODO: RocketAPIError is underfined here. 
         raise RocketAPIError(None, e )
     except Exception,e:
         logger.critical("uknown error %s" % e )
