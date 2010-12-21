@@ -19,6 +19,7 @@ import urlparse
 import mimetypes
 import logging
 
+from collections import defaultdict
 
 import proxies
 from auth import sign_args
@@ -72,13 +73,35 @@ def logging_context(log_stream=sys.stdout, log_level=logging.INFO):
     # set stream from user, user sys.stdout as rocket default
     sh = logging.StreamHandler( log_stream )
     # set the log level requested by user, default is logging.info
-    sh.setLevel( log_level )
-    formatter = logging.Formatter("%(asctime)s %(process)d %(filename)s %(lineno)d %(levelname)s #rocket| %(message)s") 
+    sh.setLevel(log_level)
+    formatter = logging.Formatter("%(asctime)s %(process)d %(filename)s" \
+                                "%(lineno)d %(levelname)s #rocket| %(message)s") 
     sh.setFormatter(formatter)
     logger.addHandler(sh)
     
     return logger    
 
+#########################################
+# Events ################################
+#########################################
+
+class Event(object):
+
+    def __init__(self, query_url, secure, ns_fun, method, data):
+        self.query_url = query_url
+        self.secure = secure
+        self.data = data
+        self.ns_fun = ns_fun
+        self.method = method
+        self.succeed = None
+
+    def success(self, response):
+        self.succeed = True
+        self.response = response
+
+    def fail(self, exception):
+        self.succeed = False
+        self.result = exception 
 
 #########################################
 # The Rocket ############################
@@ -118,6 +141,7 @@ class Rocket(object):
         self.gen_namespace_pair = gen_namespace_pair
         self._log_level=log_level
         self._log_stream=log_stream
+        self._callbacks = defaultdict(lambda : defaultdict(set))
         
         logger = logging_context(log_stream=log_stream, log_level=log_level)
         logger.debug("Create rocket: url: %s client %s" % (api_url,client))
@@ -131,6 +155,7 @@ class Rocket(object):
         for namespace in self.function_list:
             (ns_name, ns_title) = self.gen_namespace_pair(namespace)
             proxy_class = rocket_proxies['%sProxy' % ns_title]
+            # TODO: setattr?
             self.__dict__[ns_name] = proxy_class(self,
                                                  '%s.%s' % (client, ns_name))
             self.namespace_map[ns_name] = namespace
@@ -139,7 +164,8 @@ class Rocket(object):
     def _expand_arguments(self, args):
         """Expands arguments from native type to web friendly type
         """
-        logger = logging_context(log_stream=self._log_stream, log_level=self._log_level)
+        logger = logging_context(log_stream=self._log_stream, 
+                                 log_level=self._log_level)
         logger.debug("rocket _expand_arguments %s" % args )
         
         for arg in args.items():
@@ -156,7 +182,8 @@ class Rocket(object):
         """Parses the response according to the given (optional) format,
         which should be 'json'.
         """
-        logger = logging_context(log_stream=self._log_stream, log_level=self._log_level)
+        logger = logging_context(log_stream=self._log_stream, 
+                                 log_level=self._log_level)
         logger.debug("rocket _parse_response, response=%s and method=%s"
                      % (response, method) )
         
@@ -202,29 +229,67 @@ class Rocket(object):
                                        format=self.format,
                                        method=method,
                                        get_args=args)
+        event = Event(query_url, secure, ns_fun, method, args)
 
-        if self.web_proxy:
-            web_proxy_handler = urllib2.ProxyHandler(self.web_proxy)
-            opener = urllib2.build_opener(web_proxy_handler)
-            response = opener.open(query_url).read()
-        else:
-            response = http_handling.urlread(query_url, data=args,
-                                             method=method.upper(),
-                                             basic_auth_pair=self.basic_auth_pair,
-                                             basic_auth_realm=self.basic_auth_realm,
-                                             logger=logging_context())
-
-            if response:
-                return self._parse_response(response, method)
+        try:
+            if self.web_proxy:
+                web_proxy_handler = urllib2.ProxyHandler(self.web_proxy)
+                opener = urllib2.build_opener(web_proxy_handler)
+                response = opener.open(query_url).read()
             else:
-                return None
-        
-        return response
+                response = http_handling.urlread(query_url, data=args,
+                                                 method=method.upper(),
+                                                 basic_auth_pair=self.basic_auth_pair,
+                                                 basic_auth_realm=self.basic_auth_realm,
+                                                 logger=logging_context())
 
+                if response:
+                    response = self._parse_response(response, method)
+                else:
+                    response = None
+        except Exception, ex_inst:
+            event.fail(ex_inst)
+            raise
+        else:
+            event.success(response)
+        finally:
+            self.fire_callbacks(event)
+
+        return response
     
     ########################################
     # Callbacks ############################
     ########################################
+
+    def add_callback(self, method, ns_fun, callback):
+        self._callbacks[method][ns_fun].add(callback)
+
+    def add_callbacks(self, methods, ns_funs, callback):
+        for method in methods:
+            for ns_fun in ns_funs:
+                self.add_callback(method, ns_fun, callback)
+
+    def remove_callback(self, method, ns_fun, callback):
+        self._callbacks[method][ns_fun].remove(callback)
+
+    def remove_callbacks(self, methods, ns_funs, callback):
+        for method in methods:
+            for ns_fun in ns_funs:
+                self.remove_callback(method, ns_fun, callback)
+
+    def fire_callbacks(self, event): 
+        
+        callbacks_collections = (self._callbacks[event.method][event.ns_fun],                                
+                                 self._callbacks[event.method][None],
+                                 self._callbacks[None][None],
+                                 )
+
+        for callbacks in callbacks_collections:
+            for callback in callbacks:
+                callback(event)
+            
+            if callbacks: # stop fire a callback on a first not empty stack
+                break
 
     def check_error(self, response):
         """Some API's transmit errors over successful HTTP connections, eg. 200.
@@ -234,7 +299,8 @@ class Rocket(object):
         pass
 
     
-    def gen_query_url(self, url, function, format=None, method=None, get_args=None):
+    def gen_query_url(self, url, function, format=None, method=None, 
+                      get_args=None):
         """Generates URL for request according to structure of IDL.
 
         Implementation formats worth considering:
